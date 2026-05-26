@@ -5,7 +5,7 @@ A full-stack **Flask web application** for intelligent loan EMI calculation, ris
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
 ![Flask](https://img.shields.io/badge/Flask-3.0%2B-black?logo=flask)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Optional-green?logo=mongodb)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+
 
 ---
 
