@@ -5,7 +5,7 @@ A full-stack **Flask web application** for intelligent loan EMI calculation, ris
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
 ![Flask](https://img.shields.io/badge/Flask-3.0%2B-black?logo=flask)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Optional-green?logo=mongodb)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+
 
 ---
 
@@ -205,15 +205,5 @@ python regression_test.py
 5. Open a Pull Request
 
 ---
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-Built with ❤️ as a full-stack econometric loan analytics dashboard.
 
 > **Disclaimer:** This application is for educational and analytical purposes only. EMI calculations and risk assessments are based on simulated econometric models and should not be used as formal financial advice.
