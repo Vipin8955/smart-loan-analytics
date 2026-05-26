@@ -206,14 +206,4 @@ python regression_test.py
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-Built with ❤️ as a full-stack econometric loan analytics dashboard.
-
 > **Disclaimer:** This application is for educational and analytical purposes only. EMI calculations and risk assessments are based on simulated econometric models and should not be used as formal financial advice.
