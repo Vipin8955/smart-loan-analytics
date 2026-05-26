@@ -1,0 +1,52 @@
+# ============================================================
+#  .gitignore — Smart Loan EMI Analytics Dashboard
+# ============================================================
+
+# --- Virtual Environments (never commit these) ---
+myvenv/
+.venv/
+.venv-1/
+venv/
+ENV/
+env/
+
+# --- Environment Variables (contains secrets — never commit) ---
+.env
+.env.local
+.env.production
+# .env.example is ALLOWED — it's a safe template
+
+# --- Python Cache & Bytecode ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+.pytest_cache/
+
+# --- Databases & Local Data ---
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# --- IDE & Editor Settings ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+
+# --- OS Generated Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# --- Distribution / Build ---
+dist/
+build/
+*.egg-info/

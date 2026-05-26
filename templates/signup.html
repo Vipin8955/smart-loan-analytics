@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup | Smart Loan Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+
+<body>
+
+<div class="signup-container">
+
+    <div class="signup-card">
+
+        <h2>🚀 Create Account</h2>
+        <p class="subtitle">Join Smart Loan EMI Analytics</p>
+
+        {% if error %}
+        <div class="error-message" style="color: #e53e3e; background: #fff5f5; border: 1px solid #fed7d7; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px; font-size: 0.9em; font-weight: 500;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" id="signupForm">
+
+            <div class="input-group">
+                <input type="text" name="username" id="username" required>
+                <label>Username</label>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="password" id="password" required>
+                <label>Password</label>
+                <span class="toggle" onclick="togglePassword('password')">👁</span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="confirmPassword" required>
+                <label>Confirm Password</label>
+                <span class="toggle" onclick="togglePassword('confirmPassword')">👁</span>
+            </div>
+
+            <button type="submit" class="signup-btn">Signup</button>
+
+            <p class="login-link">
+                Already have account?
+                <a href="/login">Login</a>
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='signup.js') }}"></script>
+
+</body>
+</html>

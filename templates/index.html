@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Loan EMI Analytics Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- DB Status Banner - shown by JS when MongoDB is offline or reconnected -->
+<div id="dbStatusBanner" style="display:none;"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <div>
+            <h2>📊 Smart Loan EMI Analytics Dashboard</h2>
+            <p class="text-muted">
+                Multi-Loan | RBI Linked | Regression | Compounding Engine
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center">
+            {% if username %}
+            <span class="me-3 text-muted">Welcome, <b>{{ username }}</b>!</span>
+            {% endif %}
+
+            <button onclick="toggleTheme()" class="btn btn-outline-dark btn-sm me-2">
+                Toggle Theme
+            </button>
+
+            <a href="/download-report" class="btn btn-success btn-sm me-2">
+                Download PDF
+            </a>
+
+            <a href="/logout" class="btn btn-danger btn-sm">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- INPUT CARD -->
+    <div class="card p-4 mb-4 shadow-sm border-0 bg-light">
+        <h5 class="mb-3 text-secondary">Calculate Loan Analytics</h5>
+        <div class="row g-3">
+
+            <!-- Loan Type -->
+            <div class="col-md-3">
+                <label for="loanType" class="form-label text-muted small">Loan Category</label>
+                <select id="loanType" class="form-select">
+                    <option value="Home">🏠 Home Loan</option>
+                    <option value="Personal">💳 Personal Loan</option>
+                    <option value="Car">🚗 Car Loan</option>
+                </select>
+            </div>
+
+            <!-- Principal -->
+            <div class="col-md-3">
+                <label for="principal" class="form-label text-muted small">Loan Amount (₹)</label>
+                <input type="number" id="principal" class="form-control"
+                       placeholder="e.g. 1000000" min="1000">
+            </div>
+
+            <!-- Tenure -->
+            <div class="col-md-2">
+                <label for="years" class="form-label text-muted small">Tenure (Years)</label>
+                <input type="number" id="years" class="form-control"
+                       placeholder="e.g. 5" min="1" step="0.5">
+            </div>
+
+            <!-- Income -->
+            <div class="col-md-2">
+                <label for="income" class="form-label text-muted small">Monthly Income (₹)</label>
+                <input type="number" id="income" class="form-control"
+                       placeholder="e.g. 50000" min="1000">
+            </div>
+
+            <!-- Compounding -->
+            <div class="col-md-2">
+                <label for="compoundType" class="form-label text-muted small">Compounding</label>
+                <select id="compoundType" class="form-select">
+                    <option value="12">Monthly</option>
+                    <option value="4">Quarterly</option>
+                    <option value="2">Semi-Annual</option>
+                    <option value="1">Yearly</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button class="btn btn-primary mt-4 w-100 py-2 shadow-sm font-weight-bold"
+                onclick="calculateEMI()">
+            Analyze Loan & Fit Regression Models
+        </button>
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs border-bottom-0">
+
+        <li class="nav-item">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#emiTab">
+                EMI Summary
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#modelTab">
+                Model Comparison
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#riskTab">
+                Risk Analysis
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#scenarioTab">
+                Scenario Simulation
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#graphTab">
+                Graphs
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#diagnosticTab">
+                Residual Diagnostics
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#coefTab">
+                Coefficients
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#historyTab">
+                Calculation History
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content mt-4">
+
+        <!-- EMI -->
+        <div class="tab-pane fade show active" id="emiTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Estimated Installment Details</h4>
+                <div id="emi" class="fs-4 mb-2"><b>EMI:</b> ₹0</div>
+                <div id="repo" class="text-muted mb-3"><b>Latest RBI Repo Rate:</b> 0%</div>
+                <div id="bestModel"></div>
+            </div>
+        </div>
+
+        <!-- MODEL -->
+        <div class="tab-pane fade" id="modelTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">OLS & Polynomial Fit Diagnostics</h4>
+                <div id="comparison" class="lh-lg">No calculations loaded. Please run the analysis first.</div>
+            </div>
+        </div>
+
+        <!-- RISK -->
+        <div class="tab-pane fade" id="riskTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Debt Affordability Assessment</h4>
+                <div id="risk" class="fs-5">No calculations loaded. Please run the analysis first.</div>
+            </div>
+        </div>
+
+        <!-- SCENARIO -->
+        <div class="tab-pane fade" id="scenarioTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Interest Rate Scenario Matrix</h4>
+                <p class="text-muted small">Evaluates compounding impact if rates shift by ±0.50%.</p>
+                <div id="scenario" class="lh-lg">No calculations loaded. Please run the analysis first.</div>
+            </div>
+        </div>
+
+        <!-- GRAPH -->
+        <div class="tab-pane fade" id="graphTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Statistical R² Comparison</h4>
+                <div style="height:350px; position: relative;">
+                    <canvas id="r2Chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSTICS -->
+        <div class="tab-pane fade" id="diagnosticTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Regression Residual Indicators</h4>
+                <div id="diagnostics" class="lh-lg">No calculations loaded. Please run the analysis first.</div>
+            </div>
+        </div>
+
+        <!-- COEFFICIENTS -->
+        <div class="tab-pane fade" id="coefTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Predictive OLS Formulas & Beta Coefficients</h4>
+                <div id="coefTable">No calculations loaded. Please run the analysis first.</div>
+            </div>
+        </div>
+
+        <!-- HISTORY -->
+        <div class="tab-pane fade" id="historyTab">
+            <div class="card p-4 shadow-sm border-0">
+                <h4 class="mb-3 text-primary">Your Calculation Log</h4>
+                <div class="row mb-3 g-2">
+                    <div class="col-md-4">
+                        <select id="loanFilter" class="form-select">
+                            <option value="">All Loan Types</option>
+                            <option value="Home">Home</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Car">Car</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="riskFilter" class="form-select">
+                            <option value="">All Risk Levels</option>
+                            <option value="Safe">Safe</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="sortOption" class="form-select">
+                            <option value="date">Sort by Date (Newest)</option>
+                            <option value="emi">Sort by EMI (Highest)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="historyTable" class="table-responsive">
+                    <p class="text-muted text-center py-4">No logged history found.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Consolidated Unified Script -->
+<script src="/static/script.js"></script>
+
+</body>
+</html>

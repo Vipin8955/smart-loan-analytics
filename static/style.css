@@ -1,0 +1,176 @@
+/* ================= BODY LIGHT THEME ================= */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    transition: background 0.4s ease, color 0.4s ease;
+
+    background-image: url("https://i.pinimg.com/1200x/33/65/94/3365943b903503f016ae632f05ff1116.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Glass Container */
+.container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/* ================= HEADER ================= */
+h2 {
+    font-weight: 700;
+}
+
+.text-muted {
+    font-size: 14px;
+}
+
+/* ================= CARDS ================= */
+.card {
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+    border: none;
+    transition: all 0.35s ease;
+    background: rgba(255,255,255,0.9);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+/* ================= NAV TABS ================= */
+.nav-tabs {
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    border-radius: 12px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: none;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+    box-shadow: 0 6px 16px rgba(13,110,253,0.4);
+}
+
+/* Smooth tab fade */
+.tab-pane.fade {
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* ================= BADGES ================= */
+.badge {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 25px;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.badge.bg-primary {
+    animation: pulse 1.6s infinite;
+}
+
+/* ================= INPUT ================= */
+.form-control {
+    border-radius: 14px;
+    border: 1px solid #ddd;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 12px rgba(13,110,253,0.4);
+}
+
+/* ================= BUTTON ================= */
+.btn-primary {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+/* ================= TABLE ================= */
+table {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #0d6efd;
+    color: white;
+    text-align: center;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* ================= DIAGNOSTICS ================= */
+#diagnostics {
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* ================= CHART FIX ================= */
+#graphTab {
+    height: 420px;
+}
+
+#r2Chart {
+    height: 350px !important;
+}
+
+/* ================= DARK MODE ================= */
+.dark-mode {
+    background-image: url("https://i.pinimg.com/736x/a9/df/54/a9df54675415e371c6ad25522c76fb01.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.dark-mode .container {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(14px);
+}
+
+.dark-mode .card {
+    background: rgba(30, 30, 30, 0.9);
+    color: white;
+}
+
+.dark-mode .nav-tabs .nav-link.active {
+    background-color: #0dcaf0;
+    box-shadow: 0 6px 16px rgba(13,202,240,0.4);
+}
+
+.dark-mode .table th {
+    background-color: #0dcaf0;
+    color: black;
+}
+
+/* ================= SMOOTH SCROLL ================= */
+html {
+    scroll-behavior: smooth;
+}
