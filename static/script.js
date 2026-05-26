@@ -339,7 +339,7 @@ function loadHistory() {
                 <tbody>
         `;
 
-        const compoundingMap = {12: "Monthly", 4: "Quarterly", 2: "Semi-Annual", 1: "Yearly"};
+        const compoundingMap = {0: "Simple Interest", 12: "Monthly", 4: "Quarterly", 2: "Semi-Annual", 1: "Yearly"};
 
         filtered.forEach(item => {
             let riskBadgeColor = "success";

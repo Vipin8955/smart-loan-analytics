@@ -8,7 +8,6 @@ import io
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
-from bson import ObjectId
 
 # Built-in lightweight .env loader (eliminates external python-dotenv dependency)
 def load_dotenv():
@@ -101,10 +100,18 @@ init_mongo()
 
 # ================= EMI FORMULA =================
 def calculate_emi(P, annual_rate, years, compounding=12):
+    # compounding=0 means Simple Interest mode
+    if compounding == 0:
+        if years <= 0:
+            return 0
+        total_months = years * 12
+        simple_interest = P * (annual_rate / 100) * years
+        return (P + simple_interest) / total_months
+
     r = annual_rate / (compounding * 100)
     n = years * compounding
     if r == 0:
-        # Zero interest rate: simple division
+        # Zero interest rate: principal-only equal instalments
         return P / n if n > 0 else 0
     denom = (1 + r)**n - 1
     if denom == 0:
@@ -296,7 +303,7 @@ def calculate():
         return jsonify({"error": "Loan tenure cannot exceed 50 years."}), 400
     if loan_type not in ["Home", "Personal", "Car", "Other"]:
         loan_type = "Other"  # Safe default for unknown types
-    if compounding not in [1, 2, 4, 12]:
+    if compounding not in [0, 1, 2, 4, 12]:
         compounding = 12   # Default to monthly
 
     repo_rates = fetch_repo_history()
@@ -402,6 +409,7 @@ def calculate():
 
     # Create session snapshot for PDF download
     calculation_summary = {
+        "username": session["user"],
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "loan_type": loan_type,
         "principal": principal_input,
@@ -660,7 +668,7 @@ def download_report():
     # Section: Input Summary
     story.append(Paragraph("1. Loan Structure & Pricing Details", section_style))
     
-    compounding_map = {12: "Monthly", 4: "Quarterly", 2: "Semi-Annual", 1: "Yearly"}
+    compounding_map = {0: "Simple Interest", 12: "Monthly", 4: "Quarterly", 2: "Semi-Annual", 1: "Yearly"}
     comp_freq_str = compounding_map.get(calc['compounding'], f"{calc['compounding']}x/Year")
 
     summary_data = [
@@ -825,7 +833,7 @@ def download_report():
     if "Tenure" in coef:
         equation_parts.append(f"({coef['Tenure']} * Tenure)")
         
-    equation_str = "EMI = " + " + ".join(equation_parts)
+    equation_str = "EMI = " + (" + ".join(equation_parts) if equation_parts else "(insufficient coefficient data)")
     
     story.append(Paragraph("<b>Econometric Predictive Formula:</b>", body_bold))
     story.append(Paragraph(f"<i>{equation_str}</i>", ParagraphStyle('EqStyle', parent=body_style, leftIndent=15, textColor=COLOR_SECONDARY)))
@@ -855,7 +863,7 @@ def download_report():
 def NumberFormat(val):
     try:
         return f"{int(val):,}"
-    except:
+    except (ValueError, TypeError):
         return str(val)
 
 # ================= RUN SERVER =================
